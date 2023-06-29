@@ -7,4 +7,5 @@ const apiGet = async (queryStr)=>{
     return body;
 }
 
-export const searchForShows = searchStr => apiGet(`/search/shows?q=${searchStr}`);
+export const searchForShows = query => apiGet(`/search/shows?q=${query}`);
+export const searchForActors = query => apiGet(`/search/people?q=${query}`);

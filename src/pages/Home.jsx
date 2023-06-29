@@ -1,49 +1,48 @@
 import { useState } from "react";
-import { searchForShows } from "../api/TvMazeAPI";
+import { searchForShows ,searchForActors } from "../api/TvMazeAPI";
+import SearchForm from "../components/SearchForm";
+import Shows from "../components/shows/ShowsGrid";
+import Actors from "../components/actors/ActorsGrid";
 
 function Home(){
 
-    const [searchStr,setSearchStr] = useState('');
     const [apiData,setApiData] = useState(null);
     const [apiError,setApiError] = useState(null);
 
-    function changeSearch(event){
-        setSearchStr(event.target.value);
-    }
-
-    async function formSubmit(event){
-        event.preventDefault();
-        setApiError(null);
+    async function formSubmit(options){
+        let result = null;
+        const {q,searchOpt}=options;
         try{
-            const result = await searchForShows(searchStr);
-            setApiData(result);
+            setApiError(null);
+            if( searchOpt === "shows")
+                result = await searchForShows(q);
+            else if( searchOpt === "actors")
+                result = await searchForActors(q);
         }catch(error){
             setApiError(error);
         }
+        setApiData(result);
     }
+
+    
 
     function renderApiData(){
         if(apiError){
             return <div>Error Occurred : {apiError.message}</div>;
         }
+
+        if(apiData?.length === 0)return <div>No results</div>;
         
         if(apiData){
-            return <div>
-                {apiData.map(   data => <div key={data.show.id}>{data.show.name}</div>)}
-            </div>;
+            return apiData[0].show ? <Shows shows={apiData}/> : <Actors actors={apiData}/>; 
+            
         }
         return null;
     }
 
     return <>
-        <div>
-            <form onSubmit={formSubmit}>
-                <input name="search" type="text" value={searchStr} onChange={changeSearch}/>
-                <button type="submit">Search</button>
-            </form>
-        </div>
+        <SearchForm formSubmit={formSubmit}/>
         {renderApiData()}
-    
     </>;
 }
 export default Home;
