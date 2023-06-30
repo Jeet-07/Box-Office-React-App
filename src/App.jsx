@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider} from 'react-query'
 import Home from './pages/Home';
 import Starred from './pages/Starred';
 import MainLayout from './components/MainLayout';
-import ShowPage from './components/shows/ShowPage';
+import ShowPage from './pages/ShowPage';
 
 const queryClient = new QueryClient();
 
