@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
+
 export default function ShowCard({data}){
-    const {image,name,summary}=data.show;
+    const {id,image,name,summary}=data.show;
     const shortSummary = summary?.split(' ').slice(1,10).join(' ').replace(/<.+?>/g,'');
     return <div>
         <div>
@@ -7,5 +9,7 @@ export default function ShowCard({data}){
         </div>
         <h2>{name}</h2>
         <p>{shortSummary}</p>
+        <Link to={`/show/${id}`}>Read More</Link>
+        <button >Star me</button>
     </div>;
 }
