@@ -3,25 +3,20 @@ import { searchForShows ,searchForActors } from "../api/TvMazeAPI";
 import SearchForm from "../components/SearchForm";
 import Shows from "../components/shows/ShowsGrid";
 import Actors from "../components/actors/ActorsGrid";
+import { useQuery } from "react-query";
 
 function Home(){
+    const [filter,setFilter] = useState(null);
+    const {data:apiData,error:apiError} = useQuery({
+        queryKey:['apiData',filter],
+        queryFn: ()=> filter.searchOpt === 'shows' ? searchForShows(filter.q):searchForActors(filter.q),
+        enabled: !!filter,
+        refetchOnWindowFocus:false
+    })
+    
 
-    const [apiData,setApiData] = useState(null);
-    const [apiError,setApiError] = useState(null);
-
-    async function formSubmit(options){
-        let result = null;
-        const {q,searchOpt}=options;
-        try{
-            setApiError(null);
-            if( searchOpt === "shows")
-                result = await searchForShows(q);
-            else if( searchOpt === "actors")
-                result = await searchForActors(q);
-        }catch(error){
-            setApiError(error);
-        }
-        setApiData(result);
+    function formSubmit(options){
+        setFilter(options);
     }
 
     
